@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalLens - Legal Contract Analysis Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>LegalLens</h1>
+                        <p>Smart Contract Analysis</p>
+                    </div>
+                </div>
+                
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" data-tab="dashboard">
+                        <i class="fas fa-file-text"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button class="nav-tab" data-tab="upload">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload</span>
+                    </button>
+                    <button class="nav-tab" data-tab="search">
+                        <i class="fas fa-search"></i>
+                        <span>Legal Q&A</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <div class="welcome-header">
+                        <div class="welcome-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h2>Welcome to LegalLens</h2>
+                        <p>Your AI-powered legal contract analysis platform designed to protect your interests and ensure compliance with Indian legal frameworks</p>
+                    </div>
+
+                    <!-- Features Grid -->
+                    <div class="features-grid">
+                        <div class="feature-card blue">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3>Risk Analysis</h3>
+                            <p>Advanced AI analyzes every clause to identify potential risks and legal vulnerabilities</p>
+                        </div>
+                        
+                        <div class="feature-card green">
+                            <div class="feature-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3>Legal Compliance</h3>
+                            <p>Ensures your contracts comply with RERA, Consumer Protection Act, and Indian Contract Act</p>
+                        </div>
+                        
+                        <div class="feature-card purple">
+                            <div class="feature-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3>Expert Guidance</h3>
+                            <p>Get instant answers to legal questions and contract-specific queries from our AI assistant</p>
+                        </div>
+                    </div>
+
+                    <!-- How to Use -->
+                    <div class="how-to-use">
+                        <h3><i class="fas fa-bullseye"></i> How to Use LegalLens</h3>
+                        <div class="steps-grid">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Upload Contract</h4>
+                                    <p>Upload your legal document (PDF, DOC, DOCX) using the Upload tab</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Review Analysis</h4>
+                                    <p>Get detailed clause-by-clause analysis with risk scores and recommendations</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Ask Questions</h4>
+                                    <p>Use Legal Q&A for specific questions about your contract or Indian laws</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Analysis Section -->
+                <div id="contract-analysis" class="contract-analysis hidden">
+                    <div class="analysis-header">
+                        <div class="contract-info">
+                            <h3 id="contract-name">Property Purchase Agreement - Mumbai.pdf</h3>
+                            <p id="contract-details">Real Estate • Uploaded 2025-01-27</p>
+                        </div>
+                        <div class="risk-badge high-risk">
+                            High Risk (65%)
+                        </div>
+                    </div>
+
+                    <!-- Risk Categories -->
+                    <div class="risk-categories">
+                        <div class="risk-category">
+                            <div class="category-header">
+                                <h4>Payment Terms</h4>
+                                <span class="risk-score high">85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill high" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="risk-category">
+                            <div class="category-header">
+                                <h4>Legal Compliance</h4>
+                                <span class="risk-score medium">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill medium" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div class="risk-category">
+                            <div class="category-header">
+                                <h4>Property Rights</h4>
+                                <span class="risk-score low">25%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill low" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <div class="risk-category">
+                            <div class="category-header">
+                                <h4>Exit Clauses</h4>
+                                <span class="risk-score high">70%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill high" style="width: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clause Analysis -->
+                    <div class="clause-analysis">
+                        <h4>Detailed Clause Analysis</h4>
+                        <div class="clauses-container">
+                            <!-- Clauses will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Analysis CTA -->
+                <div id="sample-cta" class="sample-cta">
+                    <i class="fas fa-file-text"></i>
+                    <h3>No Contracts Analyzed Yet</h3>
+                    <p>Upload your first contract to see detailed analysis and risk assessment</p>
+                    <button class="btn-primary" id="view-sample">
+                        <i class="fas fa-bolt"></i>
+                        View Sample Analysis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upload Tab -->
+            <div id="upload" class="tab-content">
+                <div class="upload-header">
+                    <h2>Upload Your Legal Contract</h2>
+                    <p>Upload any legal document and get instant AI-powered risk analysis with actionable insights</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <h3>Drop your contract here</h3>
+                        <p>Supports PDF, DOC, DOCX files up to 10MB</p>
+                        <label class="upload-btn">
+                            <i class="fas fa-upload"></i>
+                            Choose File
+                            <input type="file" id="file-input" accept=".pdf,.doc,.docx" hidden>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <div class="notice-content">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h4>Your Data is Secure</h4>
+                            <p>All documents are processed with enterprise-grade encryption. Your contracts are analyzed locally and never stored permanently on our servers.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Uploads -->
+                <div id="recent-uploads" class="recent-uploads hidden">
+                    <h3>Recent Uploads</h3>
+                    <div class="uploads-list" id="uploads-list">
+                        <!-- Uploaded contracts will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search" class="tab-content">
+                <div class="search-header">
+                    <h2>Legal Q&A Assistant</h2>
+                    <p>Ask questions about your contract or Indian legal regulations and get expert guidance</p>
+                </div>
+
+                <!-- Chat Interface -->
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-welcome">
+                            <i class="fas fa-robot"></i>
+                            <h3>Start a Conversation</h3>
+                            <p>Ask any question about contracts, Indian laws, or legal regulations</p>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Ask about contract clauses, RERA regulations, Indian property laws...">
+                        <button id="send-btn" class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sample Questions -->
+                <div class="sample-questions">
+                    <div class="questions-column">
+                        <h3><i class="fas fa-comments"></i> Contract Questions</h3>
+                        <div class="question-buttons">
+                            <button class="question-btn">What are the penalty clauses in my agreement?</button>
+                            <button class="question-btn">Is the possession date clause fair?</button>
+                            <button class="question-btn">What are my cancellation rights?</button>
+                            <button class="question-btn">Are there any hidden charges?</button>
+                        </div>
+                    </div>
+
+                    <div class="questions-column">
+                        <h3><i class="fas fa-book-open"></i> Legal Regulations</h3>
+                        <div class="question-buttons">
+                            <button class="question-btn">What is RERA and how does it protect buyers?</button>
+                            <button class="question-btn">Indian Contract Act provisions for property deals</button>
+                            <button class="question-btn">Stamp duty and registration requirements</button>
+                            <button class="question-btn">Consumer protection laws for real estate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
